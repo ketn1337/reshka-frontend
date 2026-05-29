@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" role="img" aria-labelledby="title desc">
+  <title id="title">О! Решка logo</title>
+  <desc id="desc">Black round О! Решка mini-hotel network logo with yellow bed icon and white script text.</desc>
+  <rect width="640" height="640" fill="#efefef"/>
+  <circle cx="320" cy="320" r="294" fill="#171716"/>
+  <g fill="none" stroke="#ffc414" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M197 184v80M445 184v80M197 215h248" stroke-width="13"/>
+    <path d="M185 267h272a17 17 0 0 1 17 17v43H168v-43a17 17 0 0 1 17-17Z" fill="#ffc414" stroke-width="9"/>
+    <path d="M218 239h66c16 0 28 11 28 27H205c0-16 12-27 28-27Z" fill="#ffc414" stroke-width="8"/>
+    <path d="M328 239h66c16 0 28 11 28 27H315c0-16 12-27 28-27Z" fill="#ffc414" stroke-width="8"/>
+    <path d="M481 230h38l11 45h-60l11-45Z" fill="#ffc414" stroke-width="8"/>
+    <path d="M500 275v24M478 304h46v61h-46zM488 322h26M488 347h10M516 347h1" stroke-width="8"/>
+    <path d="M126 370l91-10M281 363l247-14M115 483l411-34" stroke-width="8"/>
+  </g>
+  <g font-family="Georgia, 'Times New Roman', serif" font-style="italic">
+    <text x="128" y="466" fill="#ffc414" font-size="102" font-weight="700">&#1054;!</text>
+    <text x="244" y="458" fill="#ffffff" font-size="92" font-weight="500">&#1088;&#1077;&#1096;&#1082;&#1072;</text>
+  </g>
+  <path d="M272 342l-52 145" fill="none" stroke="#ffffff" stroke-width="12" stroke-linecap="round"/>
+  <text x="185" y="536" fill="#ffffff" font-family="Georgia, 'Times New Roman', serif" font-size="35" font-style="italic" font-weight="700">
+    &#1057;&#1077;&#1090;&#1100; &#1084;&#1080;&#1085;&#1080; - &#1086;&#1090;&#1077;&#1083;&#1077;&#1081;
+  </text>
+</svg>

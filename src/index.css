@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color: #171717;
+  background: #fbfaf6;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-width: 320px;
+  margin: 0;
+  background:
+    radial-gradient(circle at top left, rgba(246, 201, 14, 0.13), transparent 31rem),
+    linear-gradient(180deg, #fbfaf6 0%, #ffffff 48%, #f5f1e6 100%);
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+::selection {
+  color: #090909;
+  background: #f6c90e;
+}
+
+.section-shell {
+  @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+}
+
+.eyebrow {
+  @apply text-xs font-extrabold uppercase tracking-[0.28em] text-reshka-yellow;
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.14);
+  backdrop-filter: blur(18px);
+}
+
+.hotel-visual {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(140deg, rgba(9, 9, 9, 0.95), rgba(42, 42, 42, 0.72)),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.1) 0 1px, transparent 1px 74px),
+    linear-gradient(135deg, #f6c90e, #111111 55%, #ffffff);
+}
+
+.hotel-visual::before,
+.hotel-visual::after {
+  position: absolute;
+  content: '';
+  inset: auto;
+  border-radius: 999px;
+}
+
+.hotel-visual::before {
+  width: 16rem;
+  height: 16rem;
+  right: -3rem;
+  top: -4rem;
+  background: rgba(246, 201, 14, 0.42);
+  filter: blur(8px);
+}
+
+.hotel-visual::after {
+  width: 12rem;
+  height: 12rem;
+  left: -4rem;
+  bottom: -5rem;
+  background: rgba(255, 255, 255, 0.18);
+}
