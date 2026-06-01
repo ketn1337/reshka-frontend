@@ -43,7 +43,7 @@ function App() {
       {isResultsPage ? (
         <SearchResultsPage key={location.search} search={location.search} />
       ) : isRoomViewPage ? (
-        <RoomViewPage />
+        <RoomViewPage search={location.search} />
       ) : isBookingPage ? (
         <BookingPage key={location.search} search={location.search} />
       ) : isBookingConfirmationPage ? (
