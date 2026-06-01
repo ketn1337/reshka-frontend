@@ -10,15 +10,15 @@ export default function Rooms() {
           <div>
             <p className="eyebrow">Номера</p>
             <h2 className="mt-3 max-w-3xl font-display text-4xl font-black leading-tight text-reshka-black sm:text-5xl">
-              Четыре формата для поездки любого темпа
+              Два формата для поездки любого темпа
             </h2>
           </div>
           <p className="max-w-md text-base font-medium leading-7 text-black/60">
-            Каждый номер держит баланс между строгим дизайном, тишиной и деталями, которые чувствуются утром.
+            Стандарт доступен почти во всех комнатах, а Комфорт закреплён за номерами Аллея Труда 21 - 3 и 13.
           </p>
         </div>
 
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid max-w-5xl gap-5 md:grid-cols-2">
           {rooms.map((room, index) => (
             <motion.article
               key={room.title}

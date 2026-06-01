@@ -17,9 +17,9 @@ const roomMeta = [
     capacity: 2,
     beds: 'Queen-size кровать',
     rate: 6900,
-    available: 7,
+    available: 25,
     rating: '4.8',
-    floor: '3-5 этаж',
+    floor: '1-4 этаж',
     tags: ['Рабочее место', 'Smart TV', 'Тихий этаж'],
     perks: ['Завтрак включён', 'Бесплатная отмена до 18:00'],
   },
@@ -27,37 +27,17 @@ const roomMeta = [
     capacity: 2,
     beds: 'King-size кровать',
     rate: 8900,
-    available: 5,
+    available: 2,
     rating: '4.9',
-    floor: '4-7 этаж',
+    floor: '1-3 этаж',
     tags: ['Кофе-станция', 'Лаунж-зона', 'Blackout шторы'],
     perks: ['Завтрак включён', 'Поздний выезд по запросу'],
-  },
-  {
-    capacity: 3,
-    beds: 'King-size кровать и диван',
-    rate: 14900,
-    available: 2,
-    rating: '5.0',
-    floor: '7-8 этаж',
-    tags: ['Ванна', 'Мини-бар', 'Панорамные окна'],
-    perks: ['Завтрак включён', 'Приоритетное заселение'],
-  },
-  {
-    capacity: 4,
-    beds: 'Две кровати',
-    rate: 11500,
-    available: 3,
-    rating: '4.9',
-    floor: '2-6 этаж',
-    tags: ['Для семьи', 'Детский набор', 'Большой шкаф'],
-    perks: ['Завтрак включён', 'Бесплатная отмена до 18:00'],
   },
 ];
 
 export type CatalogRoom = (typeof rooms)[number] & (typeof roomMeta)[number];
 
-export const roomTypes = ['Любой номер', 'Стандарт', 'Комфорт', 'Люкс', 'Семейный номер'];
+export const roomTypes = ['Любой номер', 'Стандарт', 'Комфорт'];
 
 export const catalogRooms = rooms.map((room, index) => ({
   ...room,

@@ -1,8 +1,7 @@
 import { motion } from 'framer-motion';
 import { CalendarDays, Search, Users } from 'lucide-react';
 import { FormEvent } from 'react';
-
-const roomTypes = ['Любой номер', 'Стандарт', 'Комфорт', 'Люкс', 'Семейный номер'];
+import { roomTypes } from '../booking';
 
 export default function BookingForm() {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {

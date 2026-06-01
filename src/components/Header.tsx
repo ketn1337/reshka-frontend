@@ -4,6 +4,7 @@ import reshkaLogo from '../assets/reshka-logo.svg';
 
 const navItems = [
   { label: 'Номера', href: '#rooms' },
+  { label: 'План номеров', href: '/room-view' },
   { label: 'Преимущества', href: '#benefits' },
   { label: 'О нас', href: '#about' },
   { label: 'Отзывы', href: '#reviews' },
@@ -11,6 +12,13 @@ const navItems = [
 ];
 
 function scrollToSection(href: string) {
+  if (href.startsWith('/')) {
+    window.history.pushState(null, '', href);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+
   const section = document.querySelector(href);
 
   if (section) {

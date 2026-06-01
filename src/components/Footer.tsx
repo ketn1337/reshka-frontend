@@ -2,10 +2,35 @@ import { Instagram, Send, Twitter } from 'lucide-react';
 
 const footerNav = [
   { label: 'Номера', href: '#rooms' },
+  { label: 'План номеров', href: '/room-view' },
   { label: 'Бронирование', href: '#booking' },
   { label: 'Отзывы', href: '#reviews' },
   { label: 'Контакты', href: '#contacts' },
 ];
+
+function navigateFooter(href: string) {
+  if (href.startsWith('/')) {
+    window.history.pushState(null, '', href);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+
+  const section = document.querySelector(href);
+
+  if (section) {
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return;
+  }
+
+  const target = href === '#hero' ? '/' : `/${href}`;
+  window.history.pushState(null, '', target);
+  window.dispatchEvent(new PopStateEvent('popstate'));
+
+  window.setTimeout(() => {
+    document.querySelector(href)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 50);
+}
 
 export default function Footer() {
   return (
@@ -14,7 +39,7 @@ export default function Footer() {
         <div className="grid gap-8 border-b border-white/10 pb-8 md:grid-cols-[1fr_auto_auto] md:items-start">
           <div>
             <button
-              onClick={() => document.querySelector('#hero')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => navigateFooter('#hero')}
               className="flex items-center gap-3 text-left"
             >
               <span className="grid h-12 w-12 place-items-center rounded-full bg-reshka-yellow text-xl font-black text-reshka-black">
@@ -36,7 +61,7 @@ export default function Footer() {
             {footerNav.map((item) => (
               <button
                 key={item.href}
-                onClick={() => document.querySelector(item.href)?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() => navigateFooter(item.href)}
                 className="text-left transition hover:text-reshka-yellow"
               >
                 {item.label}

@@ -8,11 +8,13 @@ import Footer from './components/Footer';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import Reviews from './components/Reviews';
+import RoomViewPage from './components/RoomViewPage';
 import Rooms from './components/Rooms';
 import SearchResultsPage from './components/SearchResultsPage';
 
 const resultsPaths = new Set(['/rooms', '/search']);
 const bookingPaths = new Set(['/booking', '/booking/confirmation']);
+const roomViewPaths = new Set(['/room-view', '/rooms/view']);
 
 function readLocation() {
   return {
@@ -24,6 +26,7 @@ function readLocation() {
 function App() {
   const [location, setLocation] = useState(readLocation);
   const isResultsPage = resultsPaths.has(location.pathname);
+  const isRoomViewPage = roomViewPaths.has(location.pathname);
   const isBookingPage = location.pathname === '/booking';
   const isBookingConfirmationPage = location.pathname === '/booking/confirmation';
   const isFlowPage = isResultsPage || bookingPaths.has(location.pathname);
@@ -39,6 +42,8 @@ function App() {
       {!isFlowPage && <Header />}
       {isResultsPage ? (
         <SearchResultsPage key={location.search} search={location.search} />
+      ) : isRoomViewPage ? (
+        <RoomViewPage />
       ) : isBookingPage ? (
         <BookingPage key={location.search} search={location.search} />
       ) : isBookingConfirmationPage ? (

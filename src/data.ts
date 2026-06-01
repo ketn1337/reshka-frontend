@@ -38,7 +38,7 @@ export type Review = {
 export const rooms: Room[] = [
   {
     title: 'Стандарт',
-    description: 'Лаконичный номер для короткой поездки, где всё под рукой и ничего лишнего.',
+    description: 'Лаконичный номер для короткой поездки: спокойная отделка, рабочее место и всё нужное под рукой.',
     price: 'от 6 900 ₽',
     area: '22 м²',
     image:
@@ -48,33 +48,13 @@ export const rooms: Room[] = [
   },
   {
     title: 'Комфорт',
-    description: 'Больше воздуха, мягкий свет и зона отдыха для спокойного вечера после города.',
+    description: 'Больше воздуха и мягкого света. В этом типе доступны номера Аллея Труда 21 - 3 и 13.',
     price: 'от 8 900 ₽',
     area: '28 м²',
     image:
       'https://images.unsplash.com/photo-1618220179428-22790b461013?auto=format&fit=crop&w=1200&q=80',
     amenities: ['King-size кровать', 'Лаунж-кресло', 'Кофе-станция', 'Blackout шторы'],
     accent: 'Выбор гостей',
-  },
-  {
-    title: 'Люкс',
-    description: 'Просторный номер с отдельной гостиной зоной и премиальной отделкой.',
-    price: 'от 14 900 ₽',
-    area: '44 м²',
-    image:
-      'https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&w=1200&q=80',
-    amenities: ['Гостиная зона', 'Ванна', 'Мини-бар', 'Панорамные окна'],
-    accent: 'Премиум',
-  },
-  {
-    title: 'Семейный номер',
-    description: 'Удобное пространство для семьи: две зоны сна и продуманное хранение.',
-    price: 'от 11 500 ₽',
-    area: '38 м²',
-    image:
-      'https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=1200&q=80',
-    amenities: ['До 4 гостей', 'Две кровати', 'Детский набор', 'Большой шкаф'],
-    accent: 'Для семьи',
   },
 ];
 
@@ -133,7 +113,7 @@ export const reviews: Review[] = [
 ];
 
 export const stats = [
-  { value: '72', label: 'номера' },
+  { value: '27', label: 'номеров' },
   { value: '4.9', label: 'рейтинг гостей' },
   { value: '8 мин', label: 'до центра' },
 ];
