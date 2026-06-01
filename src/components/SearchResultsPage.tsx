@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { FormEvent, useMemo, useState } from 'react';
 import {
+  buildBookingParams,
   type CatalogRoom,
   formatCurrency,
   formatDate,
@@ -118,6 +119,17 @@ function navigateToRoomView(offer: SearchOffer, query: ResultsQuery) {
     checkOut: query.checkOut,
     guests: query.guests,
   }));
+}
+
+function navigateToBooking(offer: SearchOffer, query: ResultsQuery) {
+  const params = buildBookingParams({
+    roomTitle: offer.room.title,
+    checkIn: query.checkIn,
+    checkOut: query.checkOut,
+    guests: query.guests,
+  });
+
+  pushAppPath(`/booking?${params.toString()}`);
 }
 
 function getRoomCountLabel(count: number) {
@@ -470,6 +482,14 @@ export default function SearchResultsPage({ search }: SearchResultsPageProps) {
                     <p className="text-xs font-semibold leading-5 text-black/45">
                       Фильтры: {offer.property.title}, {roomKindLabels[offer.roomKind]}.
                     </p>
+
+                    <button
+                      onClick={() => navigateToBooking(offer, query)}
+                      className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-reshka-yellow px-5 py-3 text-sm font-extrabold text-reshka-black shadow-glow transition hover:-translate-y-0.5 hover:bg-reshka-yellowSoft"
+                    >
+                      <CheckCircle2 className="h-4 w-4" />
+                      Выбрать номер
+                    </button>
                   </div>
                 </motion.article>
               );
