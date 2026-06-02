@@ -4,6 +4,8 @@ import {
   Building2,
   CalendarDays,
   CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
   Filter,
   MapPin,
   Search,
@@ -52,6 +54,13 @@ type SearchOffer = {
   room: CatalogRoom;
   units: RoomUnit[];
   available: number;
+};
+
+type RoomImageCarouselProps = {
+  images: string[];
+  alt: string;
+  accent: string;
+  rating: string;
 };
 
 const searchOffers: SearchOffer[] = roomProperties.flatMap((property) =>
@@ -130,6 +139,82 @@ function navigateToBooking(offer: SearchOffer, query: ResultsQuery) {
   });
 
   pushAppPath(`/booking?${params.toString()}`);
+}
+
+function getOfferImages(offer: SearchOffer) {
+  return Array.from(new Set([...offer.units.flatMap((unit) => unit.images), offer.room.image]));
+}
+
+function RoomImageCarousel({ images, alt, accent, rating }: RoomImageCarouselProps) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const activeImage = images[activeIndex] || images[0];
+  const canSlide = images.length > 1;
+
+  const showPrevious = () => {
+    setActiveIndex((current) => (current === 0 ? images.length - 1 : current - 1));
+  };
+
+  const showNext = () => {
+    setActiveIndex((current) => (current + 1) % images.length);
+  };
+
+  return (
+    <div className="relative h-72 overflow-hidden bg-reshka-black sm:h-80 xl:h-full">
+      <img
+        src={activeImage}
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-0 h-full w-full scale-110 object-cover opacity-45 blur-xl"
+      />
+      <img
+        src={activeImage}
+        alt={alt}
+        className="absolute left-1/2 top-1/2 max-h-full max-w-full -translate-x-1/2 -translate-y-1/2 object-contain transition duration-700 hover:scale-[1.02]"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/68 via-black/10 to-transparent" />
+      <div className="absolute left-4 top-4 rounded-full bg-reshka-yellow px-3 py-2 text-xs font-black uppercase tracking-[0.16em] text-reshka-black">
+        {accent}
+      </div>
+      <div className="absolute bottom-4 left-4 flex items-center gap-2 rounded-full bg-white/92 px-3 py-2 text-sm font-black text-reshka-black">
+        <Star className="h-4 w-4 fill-reshka-yellow text-reshka-yellow" />
+        {rating}
+      </div>
+
+      {canSlide && (
+        <>
+          <button
+            type="button"
+            onClick={showPrevious}
+            aria-label="Предыдущее фото"
+            className="absolute left-3 top-1/2 inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/92 text-reshka-black shadow-lg transition hover:bg-reshka-yellow"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+          <button
+            type="button"
+            onClick={showNext}
+            aria-label="Следующее фото"
+            className="absolute right-3 top-1/2 inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/92 text-reshka-black shadow-lg transition hover:bg-reshka-yellow"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+          <div className="absolute bottom-4 left-1/2 flex max-w-[70%] -translate-x-1/2 gap-1.5 overflow-hidden">
+            {images.slice(0, 12).map((image, imageIndex) => (
+              <button
+                key={`${image}-${imageIndex}`}
+                type="button"
+                onClick={() => setActiveIndex(imageIndex)}
+                aria-label={`Показать фото ${imageIndex + 1}`}
+                className={`h-2 shrink-0 rounded-full transition ${
+                  imageIndex === activeIndex ? 'w-6 bg-reshka-yellow' : 'w-2 bg-white/70 hover:bg-white'
+                }`}
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
 }
 
 function getRoomCountLabel(count: number) {
@@ -379,6 +464,7 @@ export default function SearchResultsPage({ search }: SearchResultsPageProps) {
             {filteredOffers.map((offer, index) => {
               const room = offer.room;
               const total = room.rate * nights;
+              const images = getOfferImages(offer);
               const unitPreview = offer.units
                 .slice(0, 6)
                 .map((unit) => unit.shortLabel)
@@ -391,23 +477,14 @@ export default function SearchResultsPage({ search }: SearchResultsPageProps) {
                   initial={{ opacity: 0, y: 24 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.45, delay: index * 0.05 }}
-                  className="overflow-hidden rounded-[30px] border border-black/10 bg-white shadow-card transition duration-300 hover:-translate-y-1 hover:shadow-glow xl:grid xl:grid-cols-[300px_minmax(0,1fr)_230px]"
+                  className="overflow-hidden rounded-[30px] border border-black/10 bg-white shadow-card transition duration-300 hover:-translate-y-1 hover:shadow-glow xl:grid xl:grid-cols-[300px_minmax(0,1fr)_230px] xl:items-stretch"
                 >
-                  <div className="relative h-64 overflow-hidden bg-reshka-black xl:h-72">
-                    <img
-                      src={room.image}
-                      alt={`${room.title} на ${offer.property.title} в отеле О! Решка`}
-                      className="h-full w-full object-cover transition duration-700 hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/68 via-black/10 to-transparent" />
-                    <div className="absolute left-4 top-4 rounded-full bg-reshka-yellow px-3 py-2 text-xs font-black uppercase tracking-[0.16em] text-reshka-black">
-                      {room.accent}
-                    </div>
-                    <div className="absolute bottom-4 left-4 flex items-center gap-2 rounded-full bg-white/92 px-3 py-2 text-sm font-black text-reshka-black">
-                      <Star className="h-4 w-4 fill-reshka-yellow text-reshka-yellow" />
-                      {room.rating}
-                    </div>
-                  </div>
+                  <RoomImageCarousel
+                    images={images}
+                    alt={`${room.title} на ${offer.property.title} в хостеле О! Решка`}
+                    accent={room.accent}
+                    rating={room.rating}
+                  />
 
                   <div className="p-5 sm:p-6">
                     <div className="mb-3 flex flex-wrap items-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-black/42">

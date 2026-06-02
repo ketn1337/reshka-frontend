@@ -23,7 +23,7 @@ export default function Contacts() {
 
             <div className="mt-9 space-y-4">
               <a
-                href="https://maps.google.com/?q=Москва, ул. Центральная, 10"
+                href="https://maps.google.com/?q=Комсомольск-на-Амуре"
                 className="flex items-center gap-4 rounded-3xl border border-white/10 bg-white/[0.06] p-4 transition hover:border-reshka-yellow/60"
               >
                 <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-reshka-yellow text-reshka-black">
@@ -33,7 +33,7 @@ export default function Contacts() {
                   <span className="block text-xs font-bold uppercase tracking-[0.18em] text-white/45">
                     Адрес
                   </span>
-                  <span className="mt-1 block font-bold">г. Москва, ул. Центральная, 10</span>
+                  <span className="mt-1 block font-bold">г. Комсомольск-на-Амуре, центр города</span>
                 </span>
               </a>
 
@@ -87,7 +87,7 @@ export default function Contacts() {
               <div className="mt-5 rounded-3xl bg-white px-6 py-4 text-center shadow-card">
                 <div className="text-xs font-black uppercase tracking-[0.22em] text-black/45">map preview</div>
                 <div className="mt-1 font-display text-2xl font-black text-reshka-black">О! Решка</div>
-                <div className="mt-1 text-sm font-bold text-black/55">Центральная, 10</div>
+                <div className="mt-1 text-sm font-bold text-black/55">Комсомольск-на-Амуре</div>
               </div>
             </div>
           </motion.div>

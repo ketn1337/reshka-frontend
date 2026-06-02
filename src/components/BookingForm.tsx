@@ -42,9 +42,6 @@ export default function BookingForm() {
                 Найдите свой номер
               </h2>
             </div>
-            <p className="max-w-md text-sm font-semibold leading-6 text-black/55">
-              Проверка доступности в demo-режиме без backend.
-            </p>
           </div>
 
           <div className="grid gap-3 lg:grid-cols-[1fr_1fr_0.8fr_1fr_auto]">

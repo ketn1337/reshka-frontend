@@ -32,14 +32,14 @@ export default function Hero() {
           >
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-semibold text-white/90 backdrop-blur">
               <Star className="h-4 w-4 fill-reshka-yellow text-reshka-yellow" />
-              Современный городской отель
+              Хостел в центре города
             </div>
             <h1 className="font-display text-5xl font-black leading-[0.95] tracking-normal sm:text-7xl lg:text-8xl">
               О! Решка
             </h1>
             <p className="mt-6 max-w-2xl text-lg font-medium leading-8 text-white/80 sm:text-xl">
-              Современный отель для комфортного отдыха и деловых поездок. Премиальная атмосфера,
-              чёткий сервис и тёплое чувство города.
+              Уютное место для короткой остановки и спокойного отдыха в Комсомольске-на-Амуре:
+              общая кухня, интернет и удобный заезд.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -63,7 +63,7 @@ export default function Hero() {
               <div className="relative z-10 flex h-full min-h-48 flex-col justify-between">
                 <div className="flex items-center justify-between gap-4">
                   <span className="rounded-full bg-white/90 px-4 py-2 text-xs font-extrabold uppercase tracking-[0.18em] text-reshka-black">
-                    city stay
+                    hostel stay
                   </span>
                   <span className="rounded-full bg-reshka-yellow px-3 py-2 text-sm font-black text-reshka-black">
                     4.9
@@ -73,7 +73,7 @@ export default function Hero() {
                   <p className="text-sm font-semibold text-white/70">Адрес</p>
                   <div className="mt-2 flex items-center gap-2 text-white">
                     <MapPin className="h-5 w-5 text-reshka-yellow" />
-                    <span className="font-bold">Москва, Центральная, 10</span>
+                    <span className="font-bold">Комсомольск-на-Амуре, центр города</span>
                   </div>
                 </div>
               </div>

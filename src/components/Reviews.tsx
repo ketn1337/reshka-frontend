@@ -26,7 +26,7 @@ export default function Reviews() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-90px' }}
               transition={{ duration: 0.45, delay: index * 0.07 }}
-              className="rounded-[30px] border border-black/10 bg-white p-6 shadow-card"
+              className="flex h-full flex-col rounded-[30px] border border-black/10 bg-white p-6 shadow-card"
             >
               <div className="flex items-start justify-between gap-4">
                 <Quote className="h-8 w-8 text-reshka-yellow" />
@@ -35,9 +35,11 @@ export default function Reviews() {
                   {review.rating}
                 </div>
               </div>
-              <p className="mt-7 min-h-28 text-base font-medium leading-7 text-black/60">{review.text}</p>
-              <div className="mt-7 border-t border-black/10 pt-5">
-                <div className="font-display text-lg font-extrabold text-reshka-black">{review.name}</div>
+              <div className="flex flex-1 items-center py-5">
+                <p className="text-base font-medium leading-7 text-black/60">{review.text}</p>
+              </div>
+              <div className="mt-auto border-t border-black/10 pt-4">
+                {review.name && <div className="font-display text-lg font-extrabold text-reshka-black">{review.name}</div>}
                 <div className="mt-1 text-xs font-bold uppercase tracking-[0.18em] text-black/45">
                   {review.role}
                 </div>

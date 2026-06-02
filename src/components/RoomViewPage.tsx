@@ -1,17 +1,19 @@
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 import {
   BedDouble,
   Building2,
   CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
   DoorOpen,
   Layers3,
   MapPin,
   MoveDiagonal2,
   Navigation,
   SlidersHorizontal,
-} from 'lucide-react';
-import { useMemo, useState } from 'react';
-import heroHome from '../assets/hero-home.png';
+} from "lucide-react";
+import { useMemo, useState } from "react";
+import heroHome from "../assets/hero-home.png";
 import {
   buildRoomViewPath,
   getAvailableRoomKinds,
@@ -26,7 +28,7 @@ import {
   type PropertyView,
   type RoomKind,
   type RoomUnit,
-} from '../roomInventory';
+} from "../roomInventory";
 
 type RoomViewPageProps = {
   search: string;
@@ -37,13 +39,16 @@ function getRoomCountLabel(count: number) {
   const mod100 = count % 100;
 
   if (mod10 === 1 && mod100 !== 11) return `${count} номер`;
-  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return `${count} номера`;
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14))
+    return `${count} номера`;
   return `${count} номеров`;
 }
 
 function getSelectableKind(property: PropertyView, preferredKind: RoomKind) {
   const availableKinds = getAvailableRoomKinds(property);
-  return availableKinds.includes(preferredKind) ? preferredKind : availableKinds[0];
+  return availableKinds.includes(preferredKind)
+    ? preferredKind
+    : availableKinds[0];
 }
 
 function getFirstRoomForKind(property: PropertyView, kind: RoomKind) {
@@ -55,7 +60,10 @@ function getInitialSelection(search: string) {
   const property = getPropertyById(query.propertyId);
   const roomKind = getSelectableKind(property, query.roomKind);
   const rooms = getRoomsByKind(property, roomKind);
-  const room = rooms.find((item) => item.id === query.roomId) || rooms[0] || property.rooms[0];
+  const room =
+    rooms.find((item) => item.id === query.roomId) ||
+    rooms[0] ||
+    property.rooms[0];
 
   return {
     propertyId: property.id,
@@ -64,19 +72,40 @@ function getInitialSelection(search: string) {
   };
 }
 
-function replaceRoomViewUrl(propertyId: PropertyId, roomKind: RoomKind, roomId: string) {
-  window.history.replaceState(null, '', buildRoomViewPath({ propertyId, roomKind, roomId }));
+function replaceRoomViewUrl(
+  propertyId: PropertyId,
+  roomKind: RoomKind,
+  roomId: string,
+) {
+  window.history.replaceState(
+    null,
+    "",
+    buildRoomViewPath({ propertyId, roomKind, roomId }),
+  );
 }
 
 export default function RoomViewPage({ search }: RoomViewPageProps) {
   const initialSelection = getInitialSelection(search);
-  const [activePropertyId, setActivePropertyId] = useState<PropertyId>(initialSelection.propertyId);
-  const [activeRoomKind, setActiveRoomKind] = useState<RoomKind>(initialSelection.roomKind);
+  const [activePropertyId, setActivePropertyId] = useState<PropertyId>(
+    initialSelection.propertyId,
+  );
+  const [activeRoomKind, setActiveRoomKind] = useState<RoomKind>(
+    initialSelection.roomKind,
+  );
   const [activeRoomId, setActiveRoomId] = useState(initialSelection.roomId);
+  const [activePhotoIndex, setActivePhotoIndex] = useState(0);
 
-  const activeProperty = useMemo(() => getPropertyById(activePropertyId), [activePropertyId]);
-  const availableKinds = useMemo(() => getAvailableRoomKinds(activeProperty), [activeProperty]);
-  const resolvedRoomKind = availableKinds.includes(activeRoomKind) ? activeRoomKind : availableKinds[0];
+  const activeProperty = useMemo(
+    () => getPropertyById(activePropertyId),
+    [activePropertyId],
+  );
+  const availableKinds = useMemo(
+    () => getAvailableRoomKinds(activeProperty),
+    [activeProperty],
+  );
+  const resolvedRoomKind = availableKinds.includes(activeRoomKind)
+    ? activeRoomKind
+    : availableKinds[0];
   const activeKindDetail = getRoomKindDetail(resolvedRoomKind);
 
   const filteredRooms = useMemo(
@@ -85,11 +114,21 @@ export default function RoomViewPage({ search }: RoomViewPageProps) {
   );
 
   const activeRoom = useMemo(
-    () => filteredRooms.find((room) => room.id === activeRoomId) || filteredRooms[0] || activeProperty.rooms[0],
+    () =>
+      filteredRooms.find((room) => room.id === activeRoomId) ||
+      filteredRooms[0] ||
+      activeProperty.rooms[0],
     [activeProperty.rooms, activeRoomId, filteredRooms],
   );
 
-  const activeRoomIndex = filteredRooms.findIndex((room) => room.id === activeRoom.id);
+  const activeRoomIndex = filteredRooms.findIndex(
+    (room) => room.id === activeRoom.id,
+  );
+  const activeRoomImages =
+    activeRoom.images.length > 0 ? activeRoom.images : [heroHome];
+  const activePhoto =
+    activeRoomImages[activePhotoIndex % activeRoomImages.length] ||
+    activeRoomImages[0];
 
   const selectProperty = (property: PropertyView) => {
     const nextKind = getSelectableKind(property, resolvedRoomKind);
@@ -98,6 +137,7 @@ export default function RoomViewPage({ search }: RoomViewPageProps) {
     setActivePropertyId(property.id);
     setActiveRoomKind(nextKind);
     setActiveRoomId(nextRoom.id);
+    setActivePhotoIndex(0);
     replaceRoomViewUrl(property.id, nextKind, nextRoom.id);
   };
 
@@ -108,11 +148,13 @@ export default function RoomViewPage({ search }: RoomViewPageProps) {
 
     setActiveRoomKind(roomKind);
     setActiveRoomId(nextRoom.id);
+    setActivePhotoIndex(0);
     replaceRoomViewUrl(activeProperty.id, roomKind, nextRoom.id);
   };
 
   const selectRoom = (room: RoomUnit) => {
     setActiveRoomId(room.id);
+    setActivePhotoIndex(0);
     replaceRoomViewUrl(activeProperty.id, resolvedRoomKind, room.id);
   };
 
@@ -126,7 +168,8 @@ export default function RoomViewPage({ search }: RoomViewPageProps) {
               План по адресу и типу
             </h1>
             <p className="mt-4 max-w-2xl text-base font-medium leading-7 text-black/62">
-              Выберите корпус и тип номера. Комфорт доступен только в номерах Аллея Труда 21 - 3 и 13.
+              Выберите корпус и тип номера. Комфорт доступен только в номерах
+              Аллея Труда 21 - 3 и 13.
             </p>
           </div>
 
@@ -148,20 +191,26 @@ export default function RoomViewPage({ search }: RoomViewPageProps) {
                     onClick={() => selectProperty(property)}
                     className={`flex min-h-20 items-center gap-3 rounded-[20px] px-4 py-3 text-left transition ${
                       isActive
-                        ? 'bg-reshka-black text-white shadow-xl'
-                        : 'bg-[#fbfaf6] text-reshka-black hover:bg-reshka-yellow/18'
+                        ? "bg-reshka-black text-white shadow-xl"
+                        : "bg-[#fbfaf6] text-reshka-black hover:bg-reshka-yellow/18"
                     }`}
                   >
                     <span
                       className={`grid h-11 w-11 shrink-0 place-items-center rounded-full ${
-                        isActive ? 'bg-reshka-yellow text-reshka-black' : 'bg-white text-reshka-black'
+                        isActive
+                          ? "bg-reshka-yellow text-reshka-black"
+                          : "bg-white text-reshka-black"
                       }`}
                     >
                       <Building2 className="h-5 w-5" />
                     </span>
                     <span className="min-w-0">
-                      <span className="block truncate text-base font-black">{property.title}</span>
-                      <span className={`mt-1 block text-sm font-bold ${isActive ? 'text-white/58' : 'text-black/45'}`}>
+                      <span className="block truncate text-base font-black">
+                        {property.title}
+                      </span>
+                      <span
+                        className={`mt-1 block text-sm font-bold ${isActive ? "text-white/58" : "text-black/45"}`}
+                      >
                         {property.accent}
                       </span>
                     </span>
@@ -190,21 +239,27 @@ export default function RoomViewPage({ search }: RoomViewPageProps) {
                     onClick={() => selectRoomKind(roomKind)}
                     className={`flex min-h-16 items-center gap-3 rounded-[20px] px-4 py-3 text-left transition disabled:cursor-not-allowed disabled:opacity-45 ${
                       isActive
-                        ? 'bg-reshka-yellow text-reshka-black shadow-glow'
-                        : 'bg-[#fbfaf6] text-reshka-black hover:bg-reshka-yellow/18'
+                        ? "bg-reshka-yellow text-reshka-black shadow-glow"
+                        : "bg-[#fbfaf6] text-reshka-black hover:bg-reshka-yellow/18"
                     }`}
                   >
                     <span
                       className={`grid h-10 w-10 shrink-0 place-items-center rounded-full ${
-                        isActive ? 'bg-reshka-black text-white' : 'bg-white text-reshka-black'
+                        isActive
+                          ? "bg-reshka-black text-white"
+                          : "bg-white text-reshka-black"
                       }`}
                     >
                       <SlidersHorizontal className="h-4 w-4" />
                     </span>
                     <span className="min-w-0">
-                      <span className="block truncate text-sm font-black">{roomKindLabels[roomKind]}</span>
+                      <span className="block truncate text-sm font-black">
+                        {roomKindLabels[roomKind]}
+                      </span>
                       <span className="mt-1 block text-xs font-bold text-black/45">
-                        {isAvailable ? getRoomCountLabel(roomsByKind.length) : 'нет на этом адресе'}
+                        {isAvailable
+                          ? getRoomCountLabel(roomsByKind.length)
+                          : "нет на этом адресе"}
                       </span>
                     </span>
                   </button>
@@ -222,30 +277,121 @@ export default function RoomViewPage({ search }: RoomViewPageProps) {
             transition={{ duration: 0.35 }}
             className="overflow-hidden rounded-[30px] border border-black/10 bg-white shadow-card"
           >
-            <div className="relative min-h-[280px] overflow-hidden bg-reshka-black sm:min-h-[360px]">
-              <img src={heroHome} alt="Интерьер номера О! Решка" className="absolute inset-0 h-full w-full object-cover" />
-              <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.76),rgba(0,0,0,0.28)_54%,rgba(0,0,0,0.64))]" />
-              <div className="absolute left-5 top-5 flex flex-wrap gap-2">
-                <span className="inline-flex items-center gap-2 rounded-full bg-white/92 px-4 py-2 text-sm font-black text-reshka-black">
-                  <MapPin className="h-4 w-4 text-reshka-yellow" />
-                  {activeProperty.title}
-                </span>
-                <span className="inline-flex items-center gap-2 rounded-full bg-reshka-yellow px-4 py-2 text-sm font-black text-reshka-black">
-                  <SlidersHorizontal className="h-4 w-4" />
-                  {roomKindLabels[resolvedRoomKind]}
-                </span>
-                <span className="inline-flex items-center gap-2 rounded-full bg-white/92 px-4 py-2 text-sm font-black text-reshka-black">
-                  <DoorOpen className="h-4 w-4 text-reshka-yellow" />
-                  {activeRoom.label}
-                </span>
-              </div>
+            <div className="relative overflow-hidden rounded-[2rem] bg-reshka-black shadow-2xl">
+              <div className="grid min-h-[420px] lg:grid-cols-[0.9fr_1.35fr]">
+                {/* Левая информационная часть */}
+                <div className="relative z-10 flex flex-col justify-between p-6 sm:p-8 lg:p-10">
+                  <div className="flex flex-wrap gap-2">
+                    <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-black text-white ring-1 ring-white/15 backdrop-blur">
+                      <MapPin className="h-4 w-4 text-reshka-yellow" />
+                      {activeProperty.title}
+                    </span>
 
-              <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-7">
-                <div className="max-w-xl">
-                  <p className="text-sm font-bold text-white/70">{activeProperty.description}</p>
-                  <h2 className="mt-2 font-display text-4xl font-black leading-tight text-white sm:text-5xl">
-                    {activeRoom.label}
-                  </h2>
+                    <span className="inline-flex items-center gap-2 rounded-full bg-reshka-yellow px-4 py-2 text-sm font-black text-reshka-black">
+                      <SlidersHorizontal className="h-4 w-4" />
+                      {roomKindLabels[resolvedRoomKind]}
+                    </span>
+
+                    <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-black text-white ring-1 ring-white/15 backdrop-blur">
+                      <DoorOpen className="h-4 w-4 text-reshka-yellow" />
+                      {activeRoom.label}
+                    </span>
+                  </div>
+
+                  <div className="mt-12 max-w-xl">
+                    <p className="text-sm font-bold uppercase tracking-[0.22em] text-reshka-yellow">
+                      О! Решка
+                    </p>
+
+                    <h2 className="mt-4 font-display text-4xl font-black leading-[0.95] text-white sm:text-5xl lg:text-6xl">
+                      {activeRoom.label}
+                    </h2>
+
+                    <p className="mt-5 max-w-md text-base font-semibold leading-7 text-white/68">
+                      {activeProperty.description}
+                    </p>
+                  </div>
+
+                  <div className="mt-8 flex items-center gap-3">
+                    <div className="h-1.5 w-16 rounded-full bg-reshka-yellow" />
+                    <span className="text-sm font-bold text-white/45">
+                      {activePhotoIndex + 1} / {activeRoomImages.length}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Правая часть с фото */}
+                <div className="relative min-h-[320px] overflow-hidden bg-neutral-950 lg:min-h-[420px]">
+                  <img
+                    src={activePhoto}
+                    alt=""
+                    aria-hidden="true"
+                    className="absolute inset-0 h-full w-full scale-110 object-cover opacity-25 blur-2xl"
+                  />
+
+                  <div className="absolute inset-0 bg-gradient-to-r from-reshka-black via-black/20 to-black/20 lg:from-black/50" />
+
+                  <div className="relative flex h-full items-center justify-center p-4 sm:p-6">
+                    <div className="relative h-full max-h-[390px] w-full overflow-hidden rounded-[1.5rem] bg-black shadow-2xl ring-1 ring-white/10">
+                      <img
+                        src={activePhoto}
+                        alt={`Интерьер номера ${activeRoom.label} в хостеле О! Решка`}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                  </div>
+
+                  {activeRoomImages.length > 1 && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setActivePhotoIndex((current) =>
+                            current === 0
+                              ? activeRoomImages.length - 1
+                              : current - 1,
+                          )
+                        }
+                        aria-label="Предыдущее фото"
+                        className="absolute left-5 top-1/2 z-20 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-reshka-black shadow-xl ring-1 ring-black/5 transition hover:bg-reshka-yellow"
+                      >
+                        <ChevronLeft className="h-5 w-5" />
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setActivePhotoIndex(
+                            (current) =>
+                              (current + 1) % activeRoomImages.length,
+                          )
+                        }
+                        aria-label="Следующее фото"
+                        className="absolute right-5 top-1/2 z-20 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-reshka-black shadow-xl ring-1 ring-black/5 transition hover:bg-reshka-yellow"
+                      >
+                        <ChevronRight className="h-5 w-5" />
+                      </button>
+                    </>
+                  )}
+
+                  {activeRoomImages.length > 1 && (
+                    <div className="absolute bottom-5 left-1/2 z-20 flex -translate-x-1/2 gap-2 rounded-full bg-black/45 p-2 backdrop-blur-md ring-1 ring-white/10">
+                      {activeRoomImages.map((photo, index) => (
+                        <button
+                          key={photo}
+                          type="button"
+                          onClick={() => setActivePhotoIndex(index)}
+                          aria-label={`Открыть фото ${index + 1}`}
+                          className={[
+                            "h-2.5 rounded-full transition-all",
+                            index === activePhotoIndex
+                              ? "w-8 bg-reshka-yellow"
+                              : "w-2.5 bg-white/55 hover:bg-white",
+                          ].join(" ")}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -254,12 +400,17 @@ export default function RoomViewPage({ search }: RoomViewPageProps) {
               <div>
                 <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <p className="text-sm font-black text-black/48">Визуал корпуса</p>
-                    <h3 className="mt-1 font-display text-2xl font-black">План выбранного типа</h3>
+                    <p className="text-sm font-black text-black/48">
+                      Визуал корпуса
+                    </p>
+                    <h3 className="mt-1 font-display text-2xl font-black">
+                      План выбранного типа
+                    </h3>
                   </div>
                   <div className="inline-flex w-fit items-center gap-2 rounded-full bg-reshka-yellow/18 px-4 py-2 text-sm font-black">
                     <Layers3 className="h-4 w-4 text-reshka-yellow" />
-                    {roomKindLabels[resolvedRoomKind]}: {getRoomCountLabel(filteredRooms.length)}
+                    {roomKindLabels[resolvedRoomKind]}:{" "}
+                    {getRoomCountLabel(filteredRooms.length)}
                   </div>
                 </div>
 
@@ -274,8 +425,8 @@ export default function RoomViewPage({ search }: RoomViewPageProps) {
                         onClick={() => selectRoom(room)}
                         className={`relative grid min-h-16 place-items-center rounded-[18px] border text-sm font-black transition ${
                           isActive
-                            ? 'border-reshka-yellow bg-reshka-yellow text-reshka-black shadow-glow'
-                            : 'border-black/10 bg-[#fbfaf6] text-black/64 hover:border-reshka-yellow hover:bg-reshka-yellow/14'
+                            ? "border-reshka-yellow bg-reshka-yellow text-reshka-black shadow-glow"
+                            : "border-black/10 bg-[#fbfaf6] text-black/64 hover:border-reshka-yellow hover:bg-reshka-yellow/14"
                         }`}
                         aria-label={room.label}
                       >
@@ -290,31 +441,59 @@ export default function RoomViewPage({ search }: RoomViewPageProps) {
 
                 <div className="mt-4 grid grid-cols-[1fr_auto_1fr] items-center gap-3 text-xs font-black text-black/38">
                   <span className="h-px bg-black/10" />
-                  <span className="rounded-full border border-black/10 px-3 py-1.5">коридор</span>
+                  <span className="rounded-full border border-black/10 px-3 py-1.5">
+                    коридор
+                  </span>
                   <span className="h-px bg-black/10" />
                 </div>
               </div>
 
               <div className="space-y-3">
                 <div className="rounded-[22px] bg-reshka-black p-4 text-white">
-                  <p className="text-sm font-bold text-white/56">Выбранный номер</p>
-                  <p className="mt-2 text-2xl font-black">{activeRoom.shortLabel}</p>
+                  <p className="text-sm font-bold text-white/56">
+                    Выбранный номер
+                  </p>
+                  <p className="mt-2 text-2xl font-black">
+                    {activeRoom.shortLabel}
+                  </p>
                   <p className="mt-1 text-sm font-semibold text-white/62">
-                    {roomKindLabels[resolvedRoomKind]} / {activeProperty.shortTitle}
+                    {roomKindLabels[resolvedRoomKind]} /{" "}
+                    {activeProperty.shortTitle}
                   </p>
                 </div>
 
                 {[
-                  { label: 'Площадь', value: activeRoom.area, icon: MoveDiagonal2 },
-                  { label: 'Тип', value: roomKindLabels[resolvedRoomKind], icon: SlidersHorizontal },
-                  { label: 'Положение', value: activeRoom.side, icon: Navigation },
-                  { label: 'Кровать', value: activeKindDetail.beds, icon: BedDouble },
+                  {
+                    label: "Площадь",
+                    value: activeRoom.area,
+                    icon: MoveDiagonal2,
+                  },
+                  {
+                    label: "Тип",
+                    value: roomKindLabels[resolvedRoomKind],
+                    icon: SlidersHorizontal,
+                  },
+                  {
+                    label: "Положение",
+                    value: activeRoom.side,
+                    icon: Navigation,
+                  },
+                  {
+                    label: "Кровать",
+                    value: activeKindDetail.beds,
+                    icon: BedDouble,
+                  },
                 ].map(({ label, value, icon: Icon }) => (
-                  <div key={label} className="flex items-center gap-3 rounded-[18px] border border-black/10 px-4 py-3">
+                  <div
+                    key={label}
+                    className="flex items-center gap-3 rounded-[18px] border border-black/10 px-4 py-3"
+                  >
                     <Icon className="h-4 w-4 shrink-0 text-reshka-yellow" />
                     <div className="min-w-0">
                       <p className="text-xs font-bold text-black/40">{label}</p>
-                      <p className="truncate text-sm font-black text-reshka-black">{value}</p>
+                      <p className="truncate text-sm font-black text-reshka-black">
+                        {value}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -330,13 +509,20 @@ export default function RoomViewPage({ search }: RoomViewPageProps) {
           >
             <div className="mb-5">
               <p className="eyebrow">Выбор номера</p>
-              <h2 className="mt-2 font-display text-3xl font-black">{activeProperty.title}</h2>
+              <h2 className="mt-2 font-display text-3xl font-black">
+                {activeProperty.title}
+              </h2>
               <p className="mt-2 text-sm font-semibold leading-6 text-black/52">
-                Показан тип {roomKindLabels[resolvedRoomKind].toLowerCase()}: {activeKindDetail.description}
+                Показан тип {roomKindLabels[resolvedRoomKind].toLowerCase()}:{" "}
+                {activeKindDetail.description}
               </p>
             </div>
 
-            <div role="tablist" aria-label={`Номера ${activeProperty.title}`} className="grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
+            <div
+              role="tablist"
+              aria-label={`Номера ${activeProperty.title}`}
+              className="grid gap-2 sm:grid-cols-2 lg:grid-cols-1"
+            >
               {filteredRooms.map((room) => {
                 const isActive = room.id === activeRoom.id;
 
@@ -349,13 +535,17 @@ export default function RoomViewPage({ search }: RoomViewPageProps) {
                     onClick={() => selectRoom(room)}
                     className={`flex min-h-14 items-center justify-between gap-3 rounded-[18px] border px-4 py-3 text-left transition ${
                       isActive
-                        ? 'border-reshka-yellow bg-reshka-yellow text-reshka-black shadow-glow'
-                        : 'border-black/10 bg-[#fbfaf6] text-reshka-black hover:border-reshka-yellow hover:bg-reshka-yellow/14'
+                        ? "border-reshka-yellow bg-reshka-yellow text-reshka-black shadow-glow"
+                        : "border-black/10 bg-[#fbfaf6] text-reshka-black hover:border-reshka-yellow hover:bg-reshka-yellow/14"
                     }`}
                   >
                     <span className="min-w-0">
-                      <span className="block truncate text-sm font-black">{room.label}</span>
-                      <span className={`mt-1 block text-xs font-bold ${isActive ? 'text-black/58' : 'text-black/42'}`}>
+                      <span className="block truncate text-sm font-black">
+                        {room.label}
+                      </span>
+                      <span
+                        className={`mt-1 block text-xs font-bold ${isActive ? "text-black/58" : "text-black/42"}`}
+                      >
                         {room.floor}, {room.area}
                       </span>
                     </span>

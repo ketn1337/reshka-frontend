@@ -18,6 +18,7 @@ export type RoomUnit = {
   side: string;
   area: string;
   orientation: string;
+  images: string[];
 };
 
 export type PropertyView = {
@@ -35,6 +36,25 @@ const comfortRoomsByProperty: Record<PropertyId, number[]> = {
   alley: [3, 13],
   pioneer: [],
 };
+
+const roomPhotoModules = import.meta.glob('./photos/**/*.jpg', {
+  eager: true,
+  query: '?url',
+  import: 'default',
+}) as Record<string, string>;
+
+function getRoomPhotoKey(address: string, number: number) {
+  return `./photos/${address} (${number})/`;
+}
+
+function getRoomPhotos(address: string, number: number) {
+  const key = getRoomPhotoKey(address, number);
+
+  return Object.entries(roomPhotoModules)
+    .filter(([path]) => path.startsWith(key))
+    .sort(([left], [right]) => left.localeCompare(right, 'ru'))
+    .map(([, image]) => image);
+}
 
 function getRoomKindForNumber(propertyId: PropertyId, number: number): RoomKind {
   return comfortRoomsByProperty[propertyId].includes(number) ? 'comfort' : 'standard';
@@ -73,6 +93,7 @@ function buildRooms({
       side: index % 2 === 0 ? 'левая линия' : 'правая линия',
       area: kindDetail.area,
       orientation,
+      images: getRoomPhotos(address, number),
     };
   });
 }
