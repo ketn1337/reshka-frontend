@@ -49,11 +49,30 @@ function pluralAdults(n: number): string {
   return `${n} взрослых`;
 }
 
+const SHOW_DELAY_MS = 200;
+
 export default function BookingTooltip({ bar, x, y }: { bar: ChessboardBar; x: number; y: number }) {
   const ref = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState<{ left: number; top: number }>({ left: 0, top: 0 });
+  const [pos, setPos] = useState<{ left: number; top: number } | null>(null);
+  const [armed, setArmed] = useState(false);
 
+  // Сбрасываем состояние при смене бара. x,y в deps не нужны — внутри одного бара
+  // таймер не сбрасывается на каждом пикселе, тултип появляется и держится.
   useEffect(() => {
+    setPos(null);
+    setArmed(false);
+  }, [bar.bookingId]);
+
+  // Задержка перед показом: не мерцает на быстром движении мыши.
+  useEffect(() => {
+    const t = window.setTimeout(() => setArmed(true), SHOW_DELAY_MS);
+    return () => window.clearTimeout(t);
+  }, [bar.bookingId]);
+
+  // Меряем размер тултипа, когда armed=true. Рендерим ниже всё равно
+  // (visibility: hidden), чтобы ref.current был доступен — иначе замер никогда не случится.
+  useEffect(() => {
+    if (!armed) return;
     if (!ref.current) return;
     const rect = ref.current.getBoundingClientRect();
     const vw = window.innerWidth;
@@ -65,17 +84,24 @@ export default function BookingTooltip({ bar, x, y }: { bar: ChessboardBar; x: n
     if (left < 8) left = 8;
     if (top < 8) top = 8;
     setPos({ left, top });
-  }, [x, y, bar.bookingId]);
+  }, [x, y, armed, bar.bookingId]);
+
+  if (!armed) return null;
 
   const status = STATUS_LABEL[bar.status] ?? bar.status;
   const statusColor = STATUS_COLOR[bar.status] ?? 'bg-zinc-100 text-zinc-900 ring-zinc-300';
   const source = SOURCE_LABEL[bar.source] ?? bar.source;
 
+  // До измерения держим элемент за экраном и невидимым — мерцания в (0,0) нет.
+  const style: React.CSSProperties = pos
+    ? { left: pos.left, top: pos.top, visibility: 'visible' }
+    : { left: -9999, top: -9999, visibility: 'hidden' };
+
   return (
     <div
       ref={ref}
       className="pointer-events-none fixed z-50 w-72 rounded-2xl bg-white p-4 text-sm shadow-2xl ring-1 ring-black/10"
-      style={{ left: pos.left, top: pos.top }}
+      style={style}
     >
       <div className="mb-2 flex items-center justify-between gap-2">
         <div className="font-display text-base font-black text-reshka-black">{bar.code}</div>
