@@ -1,10 +1,11 @@
 import { motion } from 'framer-motion';
-import { ArrowUpRight, Cable, Dog, KeyRound, Plug, Refrigerator, Tv, WashingMachine } from 'lucide-react';
+import { ArrowUpRight, Bed, Cable, CookingPot, Refrigerator, ShowerHead, Sparkles, Tv, WashingMachine } from 'lucide-react';
 
 const details = [
-  { label: 'Бесплатный интернет', Icon: Plug },
-  { label: 'Можно с питомцем', Icon: Dog },
-  { label: 'Индивидуальный заезд', Icon: KeyRound },
+  { label: 'Личная кухня', Icon: CookingPot },
+  { label: 'Санузел в номере', Icon: ShowerHead },
+  { label: 'Премиум бельё', Icon: Sparkles },
+  { label: 'Queen и King кровати', Icon: Bed },
 ];
 
 const roomFeatures = [
@@ -68,7 +69,7 @@ export default function About() {
               В номере вас будут ждать телевизор и базовые удобства. Перечисленные услуги есть не во всех номерах.
             </p>
 
-            <div className="mt-8 grid gap-3 sm:grid-cols-3">
+            <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {details.map(({ label, Icon }) => (
                 <div key={label} className="rounded-[24px] border border-black/10 bg-white p-4 shadow-card">
                   <Icon className="h-6 w-6 text-reshka-yellow" />

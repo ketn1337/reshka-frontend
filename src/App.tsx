@@ -12,6 +12,16 @@ import RoomViewPage from './components/RoomViewPage';
 import Rooms from './components/Rooms';
 import SearchResultsPage from './components/SearchResultsPage';
 
+import AdminLayout, { AdminForbidden } from './admin/AdminLayout';
+import LoginPage from './admin/LoginPage';
+import ChessboardPage from './admin/ChessboardPage';
+import BookingsListPage from './admin/BookingsListPage';
+import BookingDetailPage from './admin/BookingDetailPage';
+import RoomsPage from './admin/RoomsPage';
+import GuestsPage from './admin/GuestsPage';
+import RatesPage from './admin/RatesPage';
+import UsersPage from './admin/UsersPage';
+
 const resultsPaths = new Set(['/rooms', '/search']);
 const bookingPaths = new Set(['/booking', '/booking/confirmation']);
 const roomViewPaths = new Set(['/room-view', '/rooms/view']);
@@ -23,8 +33,43 @@ function readLocation() {
   };
 }
 
+function AdminRouter({ pathname, search }: { pathname: string; search: string }) {
+  if (pathname === '/admin/login' || pathname === '/admin') {
+    if (pathname === '/admin') {
+      window.history.replaceState({}, '', '/admin/chessboard');
+      window.dispatchEvent(new PopStateEvent('popstate'));
+      return null;
+    }
+    return <LoginPage />;
+  }
+  // /admin/users защищён role-проверкой внутри
+  return (
+    <AdminLayout pathname={pathname}>
+      {pathname === '/admin/chessboard' && <ChessboardPage />}
+      {pathname.startsWith('/admin/bookings') && pathname === '/admin/bookings' && (
+        <BookingsListPage />
+      )}
+      {pathname.startsWith('/admin/bookings/') && <BookingDetailPage pathname={pathname} />}
+      {pathname === '/admin/rooms' && <RoomsPage />}
+      {pathname === '/admin/guests' && <GuestsPage />}
+      {pathname === '/admin/rates' && <RatesPage />}
+      {pathname === '/admin/users' && <UsersPage />}
+      {![
+        '/admin/chessboard',
+        '/admin/bookings',
+        '/admin/rooms',
+        '/admin/guests',
+        '/admin/rates',
+        '/admin/users',
+      ].some((p) => pathname === p || (p !== '/admin' && pathname.startsWith(p + '/'))) &&
+        !pathname.startsWith('/admin/bookings/') && <AdminForbidden />}
+    </AdminLayout>
+  );
+}
+
 function App() {
   const [location, setLocation] = useState(readLocation);
+  const isAdmin = location.pathname.startsWith('/admin');
   const isResultsPage = resultsPaths.has(location.pathname);
   const isRoomViewPage = roomViewPaths.has(location.pathname);
   const isBookingPage = location.pathname === '/booking';
@@ -36,6 +81,10 @@ function App() {
     window.addEventListener('popstate', handleLocationChange);
     return () => window.removeEventListener('popstate', handleLocationChange);
   }, []);
+
+  if (isAdmin) {
+    return <AdminRouter pathname={location.pathname} search={location.search} />;
+  }
 
   return (
     <div className="min-h-screen overflow-hidden text-reshka-black">

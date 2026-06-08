@@ -38,3 +38,6 @@ Thumbs.db
 
 home.jpg
 results-page.png
+
+# Room photos — loaded from backend at /photos/room_<id>/...
+src/photos/
