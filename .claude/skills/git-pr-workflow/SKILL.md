@@ -220,9 +220,13 @@ No AI attribution unless explicitly requested by the user.
 
 ## Before Push
 
-Before pushing a branch, suggest relevant checks.
+Before pushing a branch, suggest relevant checks based on the real project stack.
 
-For frontend projects:
+Do not assume the project is frontend-only. First inspect the project files and available scripts.
+
+### Frontend projects
+
+For frontend projects, prefer:
 
 ```bash
 npm run typecheck --if-present
@@ -231,9 +235,190 @@ npm test --if-present
 npm run build
 ```
 
-If scripts are missing, tell the user to inspect `package.json`.
+If the project uses another package manager, adapt the commands:
 
-If the task only changes documentation, build checks may be optional, but still mention that CI will validate the PR.
+```bash
+pnpm typecheck
+pnpm lint
+pnpm test
+pnpm build
+```
+
+or:
+
+```bash
+yarn typecheck
+yarn lint
+yarn test
+yarn build
+```
+
+### Backend projects
+
+For Node.js backend projects, prefer:
+
+```bash
+npm run typecheck --if-present
+npm run lint --if-present
+npm test --if-present
+npm run build --if-present
+```
+
+For .NET backend projects, prefer:
+
+```bash
+dotnet restore
+dotnet build
+dotnet test
+```
+
+For Go backend projects, prefer:
+
+```bash
+gofmt -w .
+go vet ./...
+go test ./...
+go build ./...
+```
+
+For Python backend projects, prefer checks that already exist in the project:
+
+```bash
+python -m pytest
+python -m ruff check .
+python -m mypy .
+```
+
+If the project uses Poetry:
+
+```bash
+poetry run pytest
+poetry run ruff check .
+poetry run mypy .
+```
+
+If the project uses uv:
+
+```bash
+uv run pytest
+uv run ruff check .
+uv run mypy .
+```
+
+For Java backend projects, use the project wrapper if present.
+
+Maven:
+
+```bash
+./mvnw test
+./mvnw package
+```
+
+Gradle:
+
+```bash
+./gradlew test
+./gradlew build
+```
+
+### MAX bot projects
+
+For MAX bot projects, first determine the implementation stack.
+
+The assistant must check:
+
+```bash
+git status
+ls
+```
+
+Then inspect relevant files:
+
+```text
+package.json
+pyproject.toml
+requirements.txt
+go.mod
+*.csproj
+.env.example
+README.md
+```
+
+For Node.js MAX bots, prefer:
+
+```bash
+npm run typecheck --if-present
+npm run lint --if-present
+npm test --if-present
+npm run build --if-present
+```
+
+For Python MAX bots, prefer:
+
+```bash
+python -m pytest
+python -m ruff check .
+```
+
+For Go MAX bots, prefer:
+
+```bash
+gofmt -w .
+go vet ./...
+go test ./...
+go build ./...
+```
+
+For .NET MAX bots, prefer:
+
+```bash
+dotnet restore
+dotnet build
+dotnet test
+```
+
+Before pushing a MAX bot branch, additionally verify that no secrets are staged:
+
+```bash
+git diff --cached --name-only
+git diff --cached
+```
+
+The assistant must not commit:
+
+```text
+.env
+.env.local
+bot tokens
+API tokens
+access tokens
+private keys
+real webhook secrets
+production credentials
+```
+
+If the bot requires environment variables, commit only safe examples:
+
+```text
+.env.example
+README setup instructions
+```
+
+Do not run the real bot against production services unless the user explicitly asks.
+
+### General rule
+
+If a check command does not exist, do not invent a broken command. Inspect the project configuration first, then suggest the smallest reliable check set.
+
+Before pushing, always suggest:
+
+```bash
+git status
+git diff --cached --name-only
+```
+
+Then push only when the working tree and staged files match the current task.
+
 
 ## Pushing the Feature Branch
 
