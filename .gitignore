@@ -41,3 +41,7 @@ results-page.png
 
 # Room photos — loaded from backend at /photos/room_<id>/...
 src/photos/
+
+# Claude Code local/private
+CLAUDE.local.md
+.claude/settings.local.json
